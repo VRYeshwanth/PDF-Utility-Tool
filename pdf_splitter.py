@@ -7,27 +7,7 @@ from pathlib import Path
 from tkinter import filedialog, messagebox
 
 from PyPDF2 import PdfReader, PdfWriter #type: ignore
-from utils import FONT
-
-# --------------------------------------------------
-# Theme
-# --------------------------------------------------
-
-COLORS = {
-    "background": "#F4F7FB",
-    "surface": "#FFFFFF",
-    "primary": "#2563EB",
-    "primary_hover": "#1D4ED8",
-    "text": "#172033",
-    "secondary_text": "#64748B",
-    "border": "#E2E8F0",
-    "accent_background": "#EFF6FF",
-    "success": "#15803D",
-    "error": "#DC2626",
-}
-
-
-FONT_FAMILY = "Segoe UI"
+from utils import (COLORS, FONT_FAMILY, TITLE_FONT, SECTION_FONT, SUBSECTION_FONT, BODY_FONT, SMALL_FONT, BOLD_BUTTON_FONT, clear_window, create_card, create_label, create_button, create_entry, configure_ttk_styles)
 
 # --------------------------------------------------
 # Helper Functions
@@ -153,9 +133,9 @@ def open_pdf_file(path):
 
 def show_pdf_splitter(root, show_main_menu):
 
-    # Clear the existing screen.
-    for widget in root.winfo_children():
-        widget.destroy()
+    # Clear the existing screen using the shared helper.
+    clear_window(root)
+    configure_ttk_styles(root)
 
     root.configure(bg=COLORS["background"])
     root.geometry("900x790")
@@ -177,7 +157,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         main_frame,
         text="PDF Splitter",
-        font=(FONT_FAMILY, 25, "bold"),
+        font=TITLE_FONT,
         bg=COLORS["background"],
         fg=COLORS["text"],
     ).pack(anchor="w")
@@ -185,7 +165,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         main_frame,
         text="Extract specific pages from a PDF into a new document.",
-        font=(FONT_FAMILY, 11),
+        font=BODY_FONT,
         bg=COLORS["background"],
         fg=COLORS["secondary_text"],
     ).pack(anchor="w", pady=(3, 20))
@@ -207,7 +187,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         file_card,
         text="1. Select PDF",
-        font=(FONT_FAMILY, 14, "bold"),
+        font=SECTION_FONT,
         bg=COLORS["surface"],
         fg=COLORS["text"],
     ).pack(anchor="w", pady=(0, 10))
@@ -217,10 +197,10 @@ def show_pdf_splitter(root, show_main_menu):
     file_row = tk.Frame(file_card, bg=COLORS["surface"])
     file_row.pack(fill="x")
 
-    pdf_entry = tk.Entry(
+    pdf_entry = create_entry(
         file_row,
         textvariable=pdf_path,
-        font=(FONT_FAMILY, 10),
+        font=BODY_FONT,
         bg="#F8FAFC",
         fg=COLORS["text"],
         relief="solid",
@@ -247,7 +227,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         info_card,
         text="PDF Information",
-        font=(FONT_FAMILY, 13, "bold"),
+        font=SECTION_FONT,
         bg=COLORS["accent_background"],
         fg=COLORS["text"],
     ).pack(anchor="w", pady=(0, 10))
@@ -271,7 +251,7 @@ def show_pdf_splitter(root, show_main_menu):
         tk.Label(
             item,
             text=title,
-            font=(FONT_FAMILY, 9),
+            font=SMALL_FONT,
             bg=COLORS["accent_background"],
             fg=COLORS["secondary_text"],
         ).pack(anchor="w")
@@ -279,7 +259,7 @@ def show_pdf_splitter(root, show_main_menu):
         tk.Label(
             item,
             textvariable=variable,
-            font=(FONT_FAMILY, 11, "bold"),
+            font=SECTION_FONT,
             bg=COLORS["accent_background"],
             fg=COLORS["text"],
             wraplength=240,
@@ -328,7 +308,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         output_card,
         text="2. Output Settings",
-        font=(FONT_FAMILY, 14, "bold"),
+        font=SECTION_FONT,
         bg=COLORS["surface"],
         fg=COLORS["text"],
     ).pack(anchor="w", pady=(0, 12))
@@ -337,7 +317,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         output_card,
         text="Output Directory",
-        font=(FONT_FAMILY, 10, "bold"),
+        font=BODY_FONT,
         bg=COLORS["surface"],
         fg=COLORS["text"],
     ).pack(anchor="w")
@@ -347,10 +327,10 @@ def show_pdf_splitter(root, show_main_menu):
     directory_row = tk.Frame(output_card, bg=COLORS["surface"])
     directory_row.pack(fill="x", pady=(5, 12))
 
-    tk.Entry(
+    create_entry(
         directory_row,
         textvariable=dir_path,
-        font=(FONT_FAMILY, 10),
+        font=BODY_FONT,
         bg="#F8FAFC",
         fg=COLORS["text"],
         relief="solid",
@@ -366,11 +346,11 @@ def show_pdf_splitter(root, show_main_menu):
         if directory:
             dir_path.set(directory)
 
-    tk.Button(
+    create_button(
         directory_row,
         text="Browse",
         command=choose_directory,
-        font=(FONT_FAMILY, 10, "bold"),
+        font=BODY_FONT,
         bg=COLORS["accent_background"],
         fg=COLORS["primary"],
         activebackground="#DBEAFE",
@@ -384,17 +364,17 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         output_card,
         text="Output File Name",
-        font=(FONT_FAMILY, 10, "bold"),
+        font=BODY_FONT,
         bg=COLORS["surface"],
         fg=COLORS["text"],
     ).pack(anchor="w")
 
     output_fname = tk.StringVar()
 
-    tk.Entry(
+    create_entry(
         output_card,
         textvariable=output_fname,
-        font=(FONT_FAMILY, 10),
+        font=BODY_FONT,
         bg="#F8FAFC",
         fg=COLORS["text"],
         relief="solid",
@@ -404,7 +384,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         output_card,
         text="The .pdf extension will be added automatically.",
-        font=(FONT_FAMILY, 9),
+        font=SMALL_FONT,
         bg=COLORS["surface"],
         fg=COLORS["secondary_text"],
     ).pack(anchor="w", pady=(4, 0))
@@ -426,7 +406,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         range_card,
         text="3. Select Pages",
-        font=(FONT_FAMILY, 14, "bold"),
+        font=SECTION_FONT,
         bg=COLORS["surface"],
         fg=COLORS["text"],
     ).pack(anchor="w", pady=(0, 5))
@@ -434,17 +414,17 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         range_card,
         text="Enter page numbers, ranges, or a combination of both.",
-        font=(FONT_FAMILY, 10),
+        font=BODY_FONT,
         bg=COLORS["surface"],
         fg=COLORS["secondary_text"],
     ).pack(anchor="w", pady=(0, 10))
 
     range_var = tk.StringVar()
 
-    range_entry = tk.Entry(
+    range_entry = create_entry(
         range_card,
         textvariable=range_var,
-        font=(FONT_FAMILY, 12),
+        font=SUBSECTION_FONT,
         bg="#F8FAFC",
         fg=COLORS["text"],
         relief="solid",
@@ -455,7 +435,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         range_card,
         text="Examples: 1-5     |     2, 5, 8     |     1-3, 5, 8-10",
-        font=(FONT_FAMILY, 10),
+        font=BODY_FONT,
         bg=COLORS["surface"],
         fg=COLORS["primary"],
     ).pack(anchor="w", pady=(8, 3))
@@ -463,7 +443,7 @@ def show_pdf_splitter(root, show_main_menu):
     tk.Label(
         range_card,
         text="Pages are extracted in the order you specify.",
-        font=(FONT_FAMILY, 9),
+        font=SMALL_FONT,
         bg=COLORS["surface"],
         fg=COLORS["secondary_text"],
     ).pack(anchor="w")
@@ -475,7 +455,7 @@ def show_pdf_splitter(root, show_main_menu):
     validation_label = tk.Label(
         range_card,
         textvariable=validation_message,
-        font=(FONT_FAMILY, 9),
+        font=SMALL_FONT,
         bg=COLORS["surface"],
         fg=COLORS["secondary_text"],
         wraplength=750,
@@ -583,11 +563,11 @@ def show_pdf_splitter(root, show_main_menu):
                 parent=root,
             )
 
-    tk.Button(
+    create_button(
         file_row,
         text="Browse PDF",
         command=choose_pdf,
-        font=(FONT_FAMILY, 10, "bold"),
+        font=BODY_FONT,
         bg=COLORS["primary"],
         fg="#FFFFFF",
         activebackground=COLORS["primary_hover"],
@@ -794,11 +774,11 @@ def show_pdf_splitter(root, show_main_menu):
     )
     button_frame.pack(fill="x", pady=(0, 5))
 
-    tk.Button(
+    create_button(
         button_frame,
         text="← Back to Menu",
         command=show_main_menu,
-        font=(FONT_FAMILY, 10, "bold"),
+        font=BODY_FONT,
         bg=COLORS["surface"],
         fg=COLORS["text"],
         activebackground="#E2E8F0",
@@ -808,11 +788,11 @@ def show_pdf_splitter(root, show_main_menu):
         pady=11,
     ).pack(side="left")
 
-    tk.Button(
+    create_button(
         button_frame,
         text="Extract Pages",
         command=split_pdf,
-        font=(FONT_FAMILY, 11, "bold"),
+        font=SECTION_FONT,
         bg=COLORS["primary"],
         fg="#FFFFFF",
         activebackground=COLORS["primary_hover"],

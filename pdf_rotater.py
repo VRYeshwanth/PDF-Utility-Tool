@@ -5,27 +5,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 
 from PyPDF2 import PdfReader, PdfWriter  # type: ignore
-from utils import clear_window, FONT
-
-# --------------------------------------------------
-# UI THEME
-# --------------------------------------------------
-
-BG_COLOR = "#F4F7FB"
-CARD_COLOR = "#FFFFFF"
-PRIMARY_COLOR = "#2563EB"
-PRIMARY_HOVER = "#1D4ED8"
-LIGHT_BLUE = "#EFF6FF"
-TEXT_COLOR = "#172033"
-MUTED_COLOR = "#64748B"
-BORDER_COLOR = "#E2E8F0"
-SUCCESS_COLOR = "#15803D"
-ERROR_COLOR = "#DC2626"
-
-HEADING_FONT = ("Segoe UI", 22, "bold")
-SECTION_FONT = ("Segoe UI", 12, "bold")
-BODY_FONT = ("Segoe UI", 10)
-SMALL_FONT = ("Segoe UI", 9)
+from utils import (COLORS, BG_COLOR, CARD_COLOR, PRIMARY_COLOR, PRIMARY_HOVER, LIGHT_BLUE, TEXT_COLOR, MUTED_COLOR, BORDER_COLOR, SUCCESS_COLOR, ERROR_COLOR, FONT_FAMILY, FONT, TITLE_FONT, SECTION_FONT, SUBSECTION_FONT, BODY_FONT, SMALL_FONT, BOLD_BUTTON_FONT, clear_window, create_card as shared_create_card, create_label as shared_create_label, create_button as shared_create_button, configure_ttk_styles)
 
 # --------------------------------------------------
 # HELPER FUNCTIONS
@@ -159,6 +139,7 @@ def open_pdf_file(file_path):
 
 def show_pdf_rotater(root, show_main_menu):
     clear_window(root)
+    configure_ttk_styles(root)
 
     root.configure(bg=BG_COLOR)
 
@@ -187,59 +168,18 @@ def show_pdf_rotater(root, show_main_menu):
     # --------------------------------------------------
 
     def create_card(parent, **kwargs):
-        return tk.Frame(
-            parent,
-            bg=CARD_COLOR,
-            highlightbackground=BORDER_COLOR,
-            highlightthickness=1,
-            bd=0,
-            **kwargs,
-        )
+        return shared_create_card(parent, **kwargs)
 
     def create_label(
-        parent,
-        text,
-        font=BODY_FONT,
-        fg=TEXT_COLOR,
-        bg=CARD_COLOR,
-        **kwargs,
+        parent, text, font=BODY_FONT, fg=TEXT_COLOR, bg=CARD_COLOR, **kwargs
     ):
-        return tk.Label(
-            parent,
-            text=text,
-            font=font,
-            fg=fg,
-            bg=bg,
-            **kwargs,
-        )
+        return shared_create_label(parent, text, font=font, fg=fg, bg=bg, **kwargs)
 
-    def create_button(
-        parent,
-        text,
-        command,
-        primary=False,
-        **kwargs,
-    ):
-        bg = PRIMARY_COLOR if primary else CARD_COLOR
-        fg = "#FFFFFF" if primary else TEXT_COLOR
-
-        active_bg = PRIMARY_HOVER if primary else LIGHT_BLUE
-
-        return tk.Button(
-            parent,
-            text=text,
-            command=command,
-            font=("Segoe UI", 10, "bold" if primary else "normal"),
-            bg=bg,
-            fg=fg,
-            activebackground=active_bg,
-            activeforeground=fg,
-            relief="flat",
-            bd=0,
-            cursor="hand2",
-            padx=16,
-            pady=9,
-            **kwargs,
+    def create_button(parent, text, command, primary=False, **kwargs):
+        return shared_create_button(
+            parent, text, command,
+            variant="primary" if primary else "secondary",
+            padx=16, pady=9, **kwargs
         )
 
     def set_validation(message, color=MUTED_COLOR):
@@ -593,7 +533,7 @@ def show_pdf_rotater(root, show_main_menu):
     create_label(
         header_frame,
         "PDF Rotater",
-        font=HEADING_FONT,
+        font=TITLE_FONT,
         bg=BG_COLOR,
     ).pack(anchor="w")
 
@@ -718,7 +658,7 @@ def show_pdf_rotater(root, show_main_menu):
     create_label(
         filename_frame,
         "FILENAME",
-        font=("Segoe UI", 8, "bold"),
+        font=SMALL_FONT,
         fg=MUTED_COLOR,
         bg=LIGHT_BLUE,
     ).pack(anchor="w", padx=12, pady=(10, 3))
@@ -726,7 +666,7 @@ def show_pdf_rotater(root, show_main_menu):
     filename_value = create_label(
         filename_frame,
         "No PDF selected",
-        font=("Segoe UI", 10, "bold"),
+        font=BOLD_BUTTON_FONT,
         bg=LIGHT_BLUE,
         wraplength=300,
         justify="left",
@@ -756,7 +696,7 @@ def show_pdf_rotater(root, show_main_menu):
     create_label(
         page_count_frame,
         "TOTAL PAGES",
-        font=("Segoe UI", 8, "bold"),
+        font=SMALL_FONT,
         fg=MUTED_COLOR,
         bg=LIGHT_BLUE,
     ).pack(anchor="w", padx=12, pady=(10, 3))
@@ -764,7 +704,7 @@ def show_pdf_rotater(root, show_main_menu):
     page_count_value = create_label(
         page_count_frame,
         "—",
-        font=("Segoe UI", 13, "bold"),
+        font=SUBSECTION_FONT,
         bg=LIGHT_BLUE,
     )
 
@@ -790,7 +730,7 @@ def show_pdf_rotater(root, show_main_menu):
     create_label(
         file_size_frame,
         "FILE SIZE",
-        font=("Segoe UI", 8, "bold"),
+        font=SMALL_FONT,
         fg=MUTED_COLOR,
         bg=LIGHT_BLUE,
     ).pack(anchor="w", padx=12, pady=(10, 3))
@@ -798,7 +738,7 @@ def show_pdf_rotater(root, show_main_menu):
     file_size_value = create_label(
         file_size_frame,
         "—",
-        font=("Segoe UI", 10, "bold"),
+        font=BOLD_BUTTON_FONT,
         bg=LIGHT_BLUE,
     )
 
@@ -836,7 +776,7 @@ def show_pdf_rotater(root, show_main_menu):
     create_label(
         settings_content,
         "Pages to rotate",
-        font=("Segoe UI", 10, "bold"),
+        font=BOLD_BUTTON_FONT,
     ).pack(anchor="w")
 
     create_label(
@@ -909,7 +849,7 @@ def show_pdf_rotater(root, show_main_menu):
     create_label(
         angle_frame,
         "Rotation angle",
-        font=("Segoe UI", 10, "bold"),
+        font=BOLD_BUTTON_FONT,
     ).pack(anchor="w", pady=(0, 8))
 
     angle_options = tk.Frame(
@@ -951,7 +891,7 @@ def show_pdf_rotater(root, show_main_menu):
     create_label(
         direction_frame,
         "Direction",
-        font=("Segoe UI", 10, "bold"),
+        font=BOLD_BUTTON_FONT,
     ).pack(anchor="w", pady=(0, 8))
 
     tk.Radiobutton(

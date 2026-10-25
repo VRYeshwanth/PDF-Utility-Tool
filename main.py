@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from utils import clear_window, FONT
+from utils import (COLORS, FONT_FAMILY, TITLE_FONT, SECTION_FONT, SUBSECTION_FONT, BODY_FONT, SMALL_FONT, BOLD_BUTTON_FONT, clear_window, create_card, create_label, create_button, configure_ttk_styles)
 import pdf_merger
 import pdf_splitter
 import pdf_rotater
@@ -14,16 +14,6 @@ import image_to_pdf
 
 APP_TITLE = "PDF Utilities"
 
-COLORS = {
-    "background": "#F4F7FB",
-    "surface": "#FFFFFF",
-    "primary": "#2563EB",
-    "primary_hover": "#1D4ED8",
-    "text": "#172033",
-    "secondary_text": "#64748B",
-    "border": "#E2E8F0",
-    "accent_background": "#EFF6FF",
-}
 
 WINDOW_MIN_WIDTH = 800
 WINDOW_MIN_HEIGHT = 800
@@ -63,7 +53,7 @@ def create_utility_card(parent, title, description, icon, command):
     tk.Label(
         card,
         text=title,
-        font=("Segoe UI", 15, "bold"),
+        font=SECTION_FONT,
         bg=COLORS["surface"],
         fg=COLORS["text"],
         anchor="w",
@@ -79,7 +69,7 @@ def create_utility_card(parent, title, description, icon, command):
     tk.Label(
         card,
         text=description,
-        font=("Segoe UI", 10),
+        font=BODY_FONT,
         bg=COLORS["surface"],
         fg=COLORS["secondary_text"],
         anchor="nw",
@@ -95,20 +85,14 @@ def create_utility_card(parent, title, description, icon, command):
     )
 
     # Action button
-    button = tk.Button(
+    button = create_button(
         card,
         text="Open Utility  →",
-        font=("Segoe UI", 10, "bold"),
-        bg=COLORS["accent_background"],
-        fg=COLORS["primary"],
-        activebackground=COLORS["primary"],
-        activeforeground="#FFFFFF",
-        relief="flat",
-        bd=0,
-        cursor="hand2",
+        command=command,
+        variant="subtle",
+        bold=True,
         padx=12,
         pady=10,
-        command=command,
     )
 
     button.grid(
@@ -119,26 +103,12 @@ def create_utility_card(parent, title, description, icon, command):
         pady=(0, 22),
     )
 
-    def on_enter(event):
-        button.configure(
-            bg=COLORS["primary"],
-            fg="#FFFFFF",
-        )
-
-    def on_leave(event):
-        button.configure(
-            bg=COLORS["accent_background"],
-            fg=COLORS["primary"],
-        )
-
-    button.bind("<Enter>", on_enter)
-    button.bind("<Leave>", on_leave)
-
     return card
 
 
 def show_main_menu():
     clear_window(root)
+    configure_ttk_styles(root)
 
     root.configure(bg=COLORS["background"])
 
@@ -183,7 +153,7 @@ def show_main_menu():
     tk.Label(
         header,
         text="PDF",
-        font=("Segoe UI", 20, "bold"),
+        font=TITLE_FONT,
         bg=COLORS["primary"],
         fg="#FFFFFF",
         padx=12,
@@ -199,7 +169,7 @@ def show_main_menu():
     tk.Label(
         header,
         text="PDF Utilities",
-        font=("Segoe UI", 20, "bold"),
+        font=TITLE_FONT,
         bg=COLORS["background"],
         fg=COLORS["text"],
     ).grid(
@@ -211,7 +181,7 @@ def show_main_menu():
     tk.Label(
         header,
         text="Simple tools for everyday document tasks",
-        font=("Segoe UI", 10),
+        font=BODY_FONT,
         bg=COLORS["background"],
         fg=COLORS["secondary_text"],
     ).grid(
@@ -228,7 +198,7 @@ def show_main_menu():
     tk.Label(
         main_frame,
         text="Choose a tool to get started.",
-        font=("Segoe UI", 17, "bold"),
+        font=TITLE_FONT,
         bg=COLORS["background"],
         fg=COLORS["text"],
         anchor="w",
@@ -364,7 +334,7 @@ def show_main_menu():
     tk.Label(
         footer,
         text="PDF Utilities  •  All your essential tools in one place",
-        font=("Segoe UI", 9),
+        font=SMALL_FONT,
         bg=COLORS["background"],
         fg=COLORS["secondary_text"],
     ).pack(anchor="center")
@@ -374,10 +344,9 @@ if __name__ == "__main__":
     root = tk.Tk()
 
     root.title(APP_TITLE)
-    root.geometry("850x700")
     root.minsize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
     root.configure(bg=COLORS["background"])
 
     show_main_menu()
 
-    root.mainloop()
+    root.mainloop() #type: ignore

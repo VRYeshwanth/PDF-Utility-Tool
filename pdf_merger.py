@@ -6,30 +6,11 @@ from tkinter import filedialog, messagebox, ttk
 
 from PyPDF2 import PdfReader, PdfWriter #type: ignore
 
-from utils import clear_window
-
-
-# =========================
-# Configuration
-# =========================
-
-COLORS = {
-    "background": "#F4F7FB",
-    "surface": "#FFFFFF",
-    "primary": "#2563EB",
-    "primary_hover": "#1D4ED8",
-    "text": "#172033",
-    "secondary_text": "#64748B",
-    "border": "#E2E8F0",
-    "accent_background": "#EFF6FF",
-    "success": "#15803D",
-}
-
-FONT_FAMILY = "Segoe UI"
-
+from utils import (COLORS, FONT_FAMILY, TITLE_FONT, SECTION_FONT, SUBSECTION_FONT, BODY_FONT, SMALL_FONT, BOLD_BUTTON_FONT, clear_window, create_card, create_label, create_button as shared_create_button, configure_ttk_styles)
 
 def show_pdf_merger(root, show_main_menu):
     clear_window(root)
+    configure_ttk_styles(root)
     root.configure(bg=COLORS["background"])
 
     # =========================
@@ -52,7 +33,7 @@ def show_pdf_merger(root, show_main_menu):
     tk.Label(
         main_frame,
         text="Merge PDFs",
-        font=(FONT_FAMILY, 23, "bold"),
+        font=TITLE_FONT,
         bg=COLORS["background"],
         fg=COLORS["text"],
     ).grid(row=0, column=0, sticky="w", pady=(0, 5))
@@ -60,7 +41,7 @@ def show_pdf_merger(root, show_main_menu):
     tk.Label(
         main_frame,
         text="Combine multiple PDF documents into one file.",
-        font=(FONT_FAMILY, 10),
+        font=BODY_FONT,
         bg=COLORS["background"],
         fg=COLORS["secondary_text"],
     ).grid(row=1, column=0, sticky="w", pady=(0, 20))
@@ -90,7 +71,7 @@ def show_pdf_merger(root, show_main_menu):
     count_label = tk.Label(
         list_header,
         text="Selected files (0)",
-        font=(FONT_FAMILY, 12, "bold"),
+        font=SUBSECTION_FONT,
         bg=COLORS["surface"],
         fg=COLORS["text"],
     )
@@ -99,7 +80,7 @@ def show_pdf_merger(root, show_main_menu):
     tk.Label(
         list_header,
         text="Files will be merged in the order shown.",
-        font=(FONT_FAMILY, 9),
+        font=SMALL_FONT,
         bg=COLORS["surface"],
         fg=COLORS["secondary_text"],
     ).grid(row=1, column=0, sticky="w", pady=(4, 0))
@@ -110,12 +91,12 @@ def show_pdf_merger(root, show_main_menu):
     style = ttk.Style(root)
     style.configure(
         "Merger.Treeview",
-        font=(FONT_FAMILY, 10),
+        font=BODY_FONT,
         rowheight=32,
     )
     style.configure(
         "Merger.Treeview.Heading",
-        font=(FONT_FAMILY, 10, "bold"),
+        font=BODY_FONT,
     )
 
     table_frame = tk.Frame(list_section, bg=COLORS["surface"])
@@ -162,7 +143,7 @@ def show_pdf_merger(root, show_main_menu):
     status_label = tk.Label(
         list_section,
         text="Add at least two PDF files to get started.",
-        font=(FONT_FAMILY, 9),
+        font=SMALL_FONT,
         bg=COLORS["surface"],
         fg=COLORS["secondary_text"],
         anchor="w",
@@ -509,20 +490,10 @@ def show_pdf_merger(root, show_main_menu):
     )
 
     def create_button(parent, text, command, primary=False):
-        return tk.Button(
-            parent,
-            text=text,
-            command=command,
-            font=(FONT_FAMILY, 9, "bold"),
-            bg=COLORS["primary"] if primary else COLORS["accent_background"],
-            fg="#FFFFFF" if primary else COLORS["primary"],
-            activebackground=COLORS["primary_hover"],
-            activeforeground="#FFFFFF",
-            relief="flat",
-            bd=0,
-            cursor="hand2",
-            padx=12,
-            pady=9,
+        return shared_create_button(
+            parent, text, command,
+            variant="primary" if primary else "subtle",
+            padx=12, pady=9,
         )
 
     create_button(

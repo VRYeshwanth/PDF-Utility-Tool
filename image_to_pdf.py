@@ -6,21 +6,7 @@ from tkinter import filedialog, messagebox
 
 from PIL import Image, ImageOps #type: ignore
 
-from utils import clear_window, FONT
-
-# --------------------------------------------------
-# UI THEME
-# --------------------------------------------------
-
-BG_COLOR = "#F4F6FA"
-CARD_COLOR = "#FFFFFF"
-TEXT_COLOR = "#1F2937"
-MUTED_COLOR = "#6B7280"
-ACCENT_COLOR = "#2563EB"
-ACCENT_HOVER = "#1D4ED8"
-BORDER_COLOR = "#E5E7EB"
-SUCCESS_COLOR = "#15803D"
-DANGER_COLOR = "#DC2626"
+from utils import (COLORS, BG_COLOR, CARD_COLOR, TEXT_COLOR, MUTED_COLOR, ACCENT_COLOR, ACCENT_HOVER, BORDER_COLOR, SUCCESS_COLOR, DANGER_COLOR, FONT_FAMILY, FONT, TITLE_FONT, SECTION_FONT, SUBSECTION_FONT, BODY_FONT, SMALL_FONT, BOLD_BUTTON_FONT, clear_window, create_card, create_label, create_button as shared_create_button, configure_ttk_styles)
 
 SUPPORTED_IMAGE_TYPES = (
     ("Image files", "*.png *.jpg *.jpeg *.bmp"),
@@ -138,6 +124,7 @@ def prepare_image(image_path):
 
 def show_image_to_pdf_converter(root, show_main_menu):
     clear_window(root)
+    configure_ttk_styles(root)
 
     image_paths = []
 
@@ -160,7 +147,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     tk.Label(
         header_frame,
         text="Image to PDF Converter",
-        font=(FONT, 24, "bold"),
+        font=TITLE_FONT,
         bg=BG_COLOR,
         fg=TEXT_COLOR,
     ).pack(anchor="w")
@@ -171,7 +158,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
             "Combine multiple images into a single PDF. "
             "Arrange the images in the order you want."
         ),
-        font=(FONT, 10),
+        font=BODY_FONT,
         bg=BG_COLOR,
         fg=MUTED_COLOR,
         wraplength=800,
@@ -196,7 +183,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     tk.Label(
         selection_header,
         text="Selected Images",
-        font=(FONT, 14, "bold"),
+        font=SECTION_FONT,
         bg=CARD_COLOR,
         fg=TEXT_COLOR,
     ).pack(side="left")
@@ -204,7 +191,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     image_count_label = tk.Label(
         selection_header,
         text="0 images",
-        font=(FONT, 10),
+        font=BODY_FONT,
         bg=CARD_COLOR,
         fg=MUTED_COLOR,
     )
@@ -219,7 +206,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
 
     image_listbox = tk.Listbox(
         list_frame,
-        font=(FONT, 11),
+        font=BODY_FONT,
         bg="#FFFFFF",
         fg=TEXT_COLOR,
         selectbackground=ACCENT_COLOR,
@@ -250,30 +237,16 @@ def show_image_to_pdf_converter(root, show_main_menu):
     # --------------------------------------------------
 
     def create_button(
-        parent,
-        text,
-        command,
-        bg="#FFFFFF",
-        fg=TEXT_COLOR,
-        active_bg="#F3F4F6",
-        padx=12,
-        pady=7,
-        bold=False,
+        parent, text, command, bg="#FFFFFF", fg=TEXT_COLOR,
+        active_bg="#F3F4F6", padx=12, pady=7, bold=False,
     ):
-        return tk.Button(
-            parent,
-            text=text,
-            command=command,
-            font=(FONT, 10, "bold" if bold else "normal"),
-            bg=bg,
-            fg=fg,
-            activebackground=active_bg,
-            activeforeground=fg,
-            relief="flat",
-            borderwidth=0,
-            cursor="hand2",
-            padx=padx,
-            pady=pady,
+        variant = "primary" if bg == ACCENT_COLOR and fg == "#FFFFFF" else (
+            "subtle" if bg in (ACCENT_COLOR, "#EFF6FF") else "secondary"
+        )
+        return shared_create_button(
+            parent, text, command, variant=variant, bold=bold,
+            padx=padx, pady=pady, bg=bg, fg=fg,
+            activebackground=active_bg, activeforeground=fg,
         )
 
     # --------------------------------------------------
@@ -485,7 +458,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     tk.Label(
         info_card,
         text="Image Information",
-        font=(FONT, 12, "bold"),
+        font=SUBSECTION_FONT,
         bg=CARD_COLOR,
         fg=TEXT_COLOR,
     ).pack(anchor="w", padx=16, pady=(12, 6))
@@ -496,7 +469,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     info_filename = tk.Label(
         info_content,
         text="Select an image to view its details.",
-        font=(FONT, 10),
+        font=BODY_FONT,
         bg=CARD_COLOR,
         fg=MUTED_COLOR,
         anchor="w",
@@ -508,7 +481,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     info_dimensions = tk.Label(
         info_content,
         text="Dimensions: —",
-        font=(FONT, 10),
+        font=BODY_FONT,
         bg=CARD_COLOR,
         fg=TEXT_COLOR,
         anchor="w",
@@ -518,7 +491,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     info_format = tk.Label(
         info_content,
         text="Format: —",
-        font=(FONT, 10),
+        font=BODY_FONT,
         bg=CARD_COLOR,
         fg=TEXT_COLOR,
         anchor="w",
@@ -528,7 +501,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     info_size = tk.Label(
         info_content,
         text="File size: —",
-        font=(FONT, 10),
+        font=BODY_FONT,
         bg=CARD_COLOR,
         fg=TEXT_COLOR,
         anchor="w",
@@ -602,7 +575,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
     tk.Label(
         settings_card,
         text="Conversion Settings",
-        font=(FONT, 12, "bold"),
+        font=SUBSECTION_FONT,
         bg=CARD_COLOR,
         fg=TEXT_COLOR,
     ).pack(anchor="w", padx=16, pady=(12, 4))
@@ -615,7 +588,7 @@ def show_image_to_pdf_converter(root, show_main_menu):
             "Image dimensions are preserved, and transparent areas "
             "are filled with white."
         ),
-        font=(FONT, 10),
+        font=BODY_FONT,
         bg=CARD_COLOR,
         fg=MUTED_COLOR,
         justify="left",
